@@ -60,7 +60,7 @@ const Navbar = () => {
             <Link href="/">
             <div className='flex items-center md:hidden cursor-pointer'>
                 <Image src={images.logo02} objectFit='contain' width={32} height={32} alt="logo"/>
-                <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1 ">CryptoKet</p>
+                <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1 ">Cryptonic</p>
             </div>
             </Link>
             <Link href="/">
@@ -69,7 +69,7 @@ const Navbar = () => {
             </div>
             </Link>
         </div>
-        <div className='flex flex-initial justify-end flex-row'>
+        <div className='flex flex-initial justify-end flex-row items-center'>
             <div className=' flex-end items-center mr-2'>
             <input type='checkbox' className='checkbox' id='checkbox' onChange={()=> setTheme(theme==='light' ? 'dark' : 'light' )}/>
             <label htmlFor="checkbox" className="flexBetween cursor-pointer w-8 h-4 bg-black rounded-2xl p-1 relative label  ">
