@@ -1,6 +1,6 @@
 "use client"
 import { useState,useEffect,useRef } from "react";
-import { Banner , CreatorCard } from "@/components";
+import { Banner , CreatorCard ,NFTCard  } from "@/components";
 import { MakeId } from "@/utils/makeId";
 import images from "../assets"
 import Image from "next/image";
@@ -66,6 +66,22 @@ export default function Home() {
               </div>
             </>}
           </div>
+        </div>
+      </div>
+      <div className='mt-10'>
+        <div className='flexBetween mx-4 xs:mx-0 minglg:mx-8 sm:flex-col sm:items-start'>
+          <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold xs:ml-0 flex-1 sm:mb-4'>Hot Bids</h1>
+          <div>Search Bar</div>
+        </div>
+        <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
+          {
+            [1,2,3,4,5,6,7,8,9,10].map((i)=>(
+              <NFTCard
+                key={`nft-${i}`}
+                nft={{i,name:`Nifty NFT ${i}`,seller:`0x${MakeId(3)}...${MakeId(3)}`,owner:`0x${MakeId(3)}...${MakeId(3)}`,Description:'Cool NFT on sale',price:(10-i*0.4356).toFixed(2)}}
+              />
+            ))
+          }
         </div>
       </div>
       </div>
