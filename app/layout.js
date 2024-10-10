@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { Navbar,Footer } from "@/components";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import { NFTProvider } from "@/context/NFTContext";
 config.autoAddCss = false;
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,6 +25,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+    <NFTProvider>
     <ThemeProvider attribute="class">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
@@ -33,6 +35,7 @@ export default function RootLayout({ children }) {
       <Footer/>
       </body>
     </ThemeProvider>
+    </NFTProvider>
     </html>
   );
 }
