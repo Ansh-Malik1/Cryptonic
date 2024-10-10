@@ -8,6 +8,7 @@ import images from "../assets"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faSun,faMoon} from "@fortawesome/free-solid-svg-icons";
 import { Button } from '.'
+import { NFTContext } from '@/context/NFTContext'
 
 const MenuItems  = ({isMobile , active , setActive})=>{
     const generateLink = (i) => {
@@ -35,15 +36,15 @@ const MenuItems  = ({isMobile , active , setActive})=>{
 
 const ButtonGroup = ({setActive,router})=>{
     const hasConnected = true
-    
-    return hasConnected ? (
+    const {connectWallet,currentAccount} = useContext(NFTContext)
+    return currentAccount ? (
         <Button text={"Create"} classStyles="mx-2 rounded-xl" handleClick = {()=>{
         setActive('')
         router.push('/create-nfts')
         }}></Button>
     ) :
     (
-        <Button text={"Connect"} classStyles="mx-2 rounded-xl"></Button>
+        <Button text={"Connect"} classStyles="mx-2 rounded-xl" handleClick={connectWallet}></Button>
     )
 
 }
