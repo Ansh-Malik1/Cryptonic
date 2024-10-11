@@ -46,7 +46,8 @@ export const NFTProvider = ({children})=>{
     const uploadToIPFS = async (file,setFileUrl)=>{
         try {
             const upload = pinata.upload.file(file)
-            return upload;
+            const url = `https://gateway.pinata.cloud/ipfs/${upload.IpfsHash}`
+            return url 
         } 
         catch (error) {
             console.log(('Error uploading to IPFS', error));

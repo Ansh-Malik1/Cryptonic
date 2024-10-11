@@ -19,8 +19,8 @@ const CreateNFT = () => {
   const {uploadToIPFS} = useContext(NFTContext)
   const onDrop = useCallback(async (acceptedFile)=>{
     const url = await uploadToIPFS(acceptedFile[0])
-    const baseUrl = `https://gateway.pinata.cloud/ipfs/${url.IpfsHash}`
-    setFileUrl(baseUrl)
+    
+    setFileUrl(url)
   },[])
   const {getRootProps , getInputProps,isDragActive,isDragAccept,isDragReject} = useDropzone({
     onDrop,
