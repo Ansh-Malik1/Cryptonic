@@ -1,6 +1,7 @@
 "use client"
 import React from 'react'
 import { useState,useMemo,useContext,useCallback } from 'react'
+import { NFTContext } from '@/context/NFTContext'
 import { useRouter } from 'next/router'
 import { useDropzone } from 'react-dropzone'
 import { useTheme } from 'next-themes'
@@ -15,8 +16,11 @@ const CreateNFT = () => {
   })
   const[ fileUrl , setFileUrl] = useState(null)
   const {theme} = useTheme()
-  const onDrop = useCallback(()=>{
-
+  const {uploadToIPFS} = useContext(NFTContext)
+  const onDrop = useCallback(async (acceptedFile)=>{
+    const url = await uploadToIPFS(acceptedFile[0])
+    const baseUrl = `https://gateway.pinata.cloud/ipfs/${url.IpfsHash}`
+    setFileUrl(baseUrl)
   },[])
   const {getRootProps , getInputProps,isDragActive,isDragAccept,isDragReject} = useDropzone({
     onDrop,
@@ -27,7 +31,7 @@ const CreateNFT = () => {
     `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed ${isDragActive && 'border-file-active'} ${isDragAccept && 'border-file-accept'} ${isDragReject && 'border-file-reject'}`
   ), [isDragActive, isDragAccept, isDragReject]);
 
-  console.log(formInput)
+
   return (
     <div className = "flex justify-center sm:px-4 p-12">
       <div className='w-3/5 md:w-full mt-16'>
