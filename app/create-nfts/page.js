@@ -2,13 +2,14 @@
 import React from 'react'
 import { useState,useMemo,useContext,useCallback } from 'react'
 import { NFTContext } from '@/context/NFTContext'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useDropzone } from 'react-dropzone'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { Button, Input } from '@/components'
 import images from "../../assets"
 const CreateNFT = () => {
+  
   const [formInput , setFormInput] = useState({
     name:'',
     description:'',
@@ -16,11 +17,13 @@ const CreateNFT = () => {
   })
   const[ fileUrl , setFileUrl] = useState(null)
   const {theme} = useTheme()
-  const {uploadToIPFS} = useContext(NFTContext)
+  const router = useRouter()
+  const {uploadToIPFS,createNFT} = useContext(NFTContext)
   const onDrop = useCallback(async (acceptedFile)=>{
     const url = await uploadToIPFS(acceptedFile[0])
     
-    setFileUrl(url)
+    const baseUrl = `https://gateway.pinata.cloud/ipfs/${url.IpfsHash}`
+    setFileUrl(baseUrl)
   },[])
   const {getRootProps , getInputProps,isDragActive,isDragAccept,isDragReject} = useDropzone({
     onDrop,
@@ -82,7 +85,7 @@ const CreateNFT = () => {
         handleClick={(e)=>setFormInput({...formInput,price:e.target.value})}
       />
       <div className='mt-7 w-full flex justify-end'>
-      <Button text={'Create NFT'} className='rounded-xl' handleClick={()=>{}}/>
+      <Button text={'Create NFT'} className='rounded-xl' handleClick={()=>createNFT(formInput,fileUrl,router)}/>
       </div>
       </div>
     </div>

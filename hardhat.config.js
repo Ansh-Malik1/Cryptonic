@@ -2,6 +2,7 @@ const fs = require('fs');
 // const { network } = require('hardhat');
 require("@nomicfoundation/hardhat-toolbox");
 
+
 /** @type import('hardhat/config').HardhatUserConfig */
 
 const privateKey = fs.readFileSync('.secret').toString().trim()

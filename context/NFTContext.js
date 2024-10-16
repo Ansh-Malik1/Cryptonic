@@ -15,9 +15,11 @@ const pinata = new PinataSDK({
 
 export const NFTContext = React.createContext();
 
+const fetchContract  = (signerOrProvider) => new ethers.Contract(MarketAdderess,MarketAdderessAbi,signerOrProvider)
+
 export const NFTProvider = ({children})=>{
     const [currentAccount,setCurrentAccount] = useState('')
-    const nftCurrency = 'MATIC'
+    const nftCurrency = 'ETH'
 
     const checkIfWalletConnected = async ()=>{
         if(!window.ethereum) return alert("Please install metamask");
@@ -46,16 +48,60 @@ export const NFTProvider = ({children})=>{
     const uploadToIPFS = async (file,setFileUrl)=>{
         try {
             const upload = pinata.upload.file(file)
-            const url = `https://gateway.pinata.cloud/ipfs/${upload.IpfsHash}`
-            return url 
+            return upload 
         } 
         catch (error) {
             console.log(('Error uploading to IPFS', error));
         }
     }
+
+    const createNFT  = async (formInput , fileUrl , router)=>{
+        const {name,description,price} = formInput
+
+        if(!name || !description || !price || !fileUrl){
+            return alert('Please fill in all fields')
+        }
+
+        const data = JSON.stringify({
+            name,
+            description,
+            price,
+            image:fileUrl
+        })
+        try{
+            const upload = pinata.upload.file(data)
+            const url = `https://gateway.pinata.cloud/ipfs/${upload.IpfsHash}`
+            await createSale(url,price)
+            router.push('/')
+        }
+        catch(err){
+            console.log(err,"error in createNFT function")
+        }
+    }
+
+    const createSale = async (url,inputPrice)=>{
+       try{
+        const web3modal = new Web3Modal()
+        const connection = await web3modal.connect()
+        const provider = new ethers.BrowserProvider(connection)
+        const signer = await provider.getSigner()
+        const price = ethers.parseUnits(inputPrice,'ether')
+        const contract = fetchContract(signer)
+        console.log(contract.getListingPrice)
+        const lprice = await contract.getListingPrice()
+            
+        
+        const transaction = await contract.createToken(url,price,{value:lprice.toString()})
+
+        await transaction.wait()
+       }
+       catch(error){
+        console.log(error,'error in createSale')
+       }
+    } 
     
     return(
-        <NFTContext.Provider value = {{nftCurrency , connectWallet,currentAccount,uploadToIPFS}}>
+        <NFTContext.Provider value = {{nftCurrency , connectWallet,currentAccount,uploadToIPFS,createNFT}}>
             {children}
         </NFTContext.Provider>
     )
