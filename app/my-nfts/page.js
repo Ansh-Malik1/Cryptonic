@@ -54,7 +54,7 @@ const MyNFTs = () => {
             <div className='flex-1 w-full flex-row sm:flex-col px-4 xs:px-0 minlg:px-8'>Search Bar</div>
             <div className='mt-4 flex w-full flex-wrap '>
               {
-                nfts.map((nft)=><NFTCard key={nft.token} nft={nft}/>)
+                nfts.map((nft)=><NFTCard key={nft.token} nft={nft} onProfilePage={true}/>)
               }
             </div>
           </div> 

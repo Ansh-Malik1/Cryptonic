@@ -41,7 +41,7 @@ const NFTDetails = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [paymentModal,setPaymentModal] = useState(false)
-  const [nft ,setNFT] = useState({image:"",tokenId:"",name:"",description:"",owner:"",seller:"",price:""})
+  const [nft ,setNFT] = useState({image:"",tokenId:"",name:"",description:"",owner:"",seller:"",price:"",tokenURI:""})
   const [successModal , setSuccessModal] = useState(false)
   const checkout = async ()=>{
     await buyNFTs(nft)
@@ -58,6 +58,7 @@ const NFTDetails = () => {
       owner:searchParams.get('owner'),
       seller:searchParams.get('seller'),
       price:searchParams.get('price'),
+      tokenURI:searchParams.get('tokenURI')
     })
     setLoading(false)
   },[searchParams])
@@ -94,7 +95,10 @@ const NFTDetails = () => {
         {
           currentAccount === nft.seller.toLowerCase() ?
           (<p className='font-poppins text-nft-dark-black-1 dark:text-nft-gray-1 text-base mb-2 font-normal border border-gray p-2'>You Cannot buy your own NFTs</p>)
-          :(
+          :
+          currentAccount===nft.owner.toLowerCase() ? 
+          (<Button text={'List on MarketPlace'} classStyles='mr-5 sm:mr-0 sm:mb-5 rounded-xl' handleClick={()=> router.push(`/resell-nft?tokenId=${nft.tokenId}&tokenURI=${nft.tokenURI}`)}/>) :
+          (
             <Button text={`Buy for ${nft.price} ${nftCurrency}`} 
               classStyles='mr-5 sm:mr-0 rounded-xl'
               handleClick={()=> setPaymentModal(true)}

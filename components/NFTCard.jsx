@@ -5,7 +5,7 @@ import images from "../assets"
 import Link from 'next/link'
 import { NFTContext } from '@/context/NFTContext'
 import { shortenAddress } from '@/utils/shortenAddress'
-const NFTCard = ({nft}) => {
+const NFTCard = ({nft,onProfilePage}) => {
   console.log(nft.tokenId,"in card")
   const {nftCurrency} = useContext(NFTContext)
   return (
@@ -18,7 +18,7 @@ const NFTCard = ({nft}) => {
         <p className='font-poppins text-nft-black-1 dark:text-white font-semibold text-xs minlg:text-lg'>{nft.name}</p>
         <div className='flexBetween mt-1 minlg:mt-3 flex-row xs:flex-row xs:items-start xs:mt-3'>
           <p className='font-poppins text-nft-black-1 dark:text-white font-semibold text-xs minlg:text-lg'>{nft.price} <span className='normal'>{nftCurrency}</span></p>
-          <p className='font-poppins text-nft-black-1 dark:text-white font-semibold text-xs minlg:text-lg'>{nft.seller.length>10 ? shortenAddress(nft.seller) : nft.seller }</p>
+          <p className='font-poppins text-nft-black-1 dark:text-white font-semibold text-xs minlg:text-lg'>{nft.seller.length>10 ? shortenAddress(onProfilePage? nft.owner : nft.seller) : nft.seller }</p>
         </div>
       </div>
       </div>
