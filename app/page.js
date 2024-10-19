@@ -1,17 +1,25 @@
 "use client"
-import { useState,useEffect,useRef } from "react";
+import { useState,useEffect,useRef,useContext } from "react";
 import { Banner , CreatorCard ,NFTCard  } from "@/components";
 import { MakeId } from "@/utils/makeId";
 import images from "../assets"
 import Image from "next/image";
 import { useTheme } from "next-themes";
-
+import { NFTContext } from "@/context/NFTContext";
 
 export default function Home() {
   const parentRef = useRef(null)
   const scrollRef = useRef(null)
   const [hideButtons, setHideButtons] = useState(false);
   const {theme} = useTheme()
+  const {fetchNFTs} = useContext(NFTContext)
+  const [nfts,setNFTs] = useState([])
+  useEffect(()=>{
+    fetchNFTs().then((items)=>{
+      setNFTs(items);
+    })
+  },[])
+  console.log(nfts)
   const handleScroll = (direction)=>{
     const {current} = scrollRef
     const scrollAmount = window.innerWidth > 1800 ? 270 : 210;
@@ -34,7 +42,7 @@ export default function Home() {
     }
   }
   useEffect(()=>{
-    isScrollable()
+    isScrollable() 
     window.addEventListener('resize',isScrollable)
     return ()=>{
       window.removeEventListener('resize',isScrollable)
