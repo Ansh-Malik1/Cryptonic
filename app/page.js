@@ -82,14 +82,17 @@ export default function Home() {
           <div>Search Bar</div>
         </div>
         <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
-          {
+        {
+          nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft}/>)
+        }
+          {/* {
             [1,2,3,4,5,6,7,8,9,10].map((i)=>(
               <NFTCard
                 key={`nft-${i}`}
                 nft={{i,name:`Nifty NFT ${i}`,seller:`0x${MakeId(3)}...${MakeId(3)}`,owner:`0x${MakeId(3)}...${MakeId(3)}`,Description:'Cool NFT on sale',price:(10-i*0.4356).toFixed(2)}}
               />
             ))
-          }
+          } */}
         </div>
       </div>
       </div>

@@ -110,15 +110,11 @@ export const NFTProvider = ({children})=>{
             const data = await contract.fetchMarketItems()
             const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
                 const tokenURI = await contract.tokenURI(tokenId)
-                console.log(tokenURI)
                 const {data} = await axios.get(tokenURI)
-                
-                console.log(typeof(data))
-                console.log(data)
                 let k = Object.keys(data)
                 const result = JSON.parse(k[0])
                 const {image,name,description} = result
-                const price = ethers.parseUnits(unformattedPrice.toString(),'ether')    
+                const price = ethers.formatUnits(unformattedPrice.toString(),'ether')    
                 return {
                     price,
                     tokenId,
@@ -138,8 +134,40 @@ export const NFTProvider = ({children})=>{
         
     }
 
+    const fetchMyNFTsOrListedNFTs = async (type) =>{
+        const web3modal = new Web3Modal()
+        const connection = await web3modal.connect()
+        const provider = new ethers.BrowserProvider(connection)
+        const signer = await provider.getSigner()
+        const contract = fetchContract(signer)
+        const data = type==='fetchItemsLised'?
+        await contract.fetchItemsListed():
+        await contract.fetchMyNFTs()
+        console.log(data)
+        const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
+            const tokenURI = await contract.tokenURI(tokenId)
+            const {data} = await axios.get(tokenURI)
+            
+            let k = Object.keys(data)
+            const result = JSON.parse(k[0])
+            const {image,name,description} = result
+            const price = ethers.formatUnits(unformattedPrice.toString(),'ether')    
+            return {
+                price,
+                tokenId,
+                seller,
+                owner,
+                image,
+                description,
+                name,
+                tokenURI
+            }
+        }))
+        return items
+    }
+
     return(
-        <NFTContext.Provider value = {{nftCurrency , connectWallet,currentAccount,uploadToIPFS,createNFT,fetchNFTs}}>
+        <NFTContext.Provider value = {{nftCurrency , connectWallet,currentAccount,uploadToIPFS,createNFT,fetchNFTs,fetchMyNFTsOrListedNFTs}}>
             {children}
         </NFTContext.Provider>
     )
