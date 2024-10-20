@@ -62,7 +62,6 @@ const NFTDetails = () => {
     })
     setLoading(false)
   },[searchParams])
-  console.log(nft)
   return ( 
     <div className='flex relative justify-center md:flex-col min-h-screen '>
       <div className='lg:mt-12 relative flex-1 flexCenter sm:px-4 p-12 border-r md:border-r-0 md:border-b dark:border-nft-black-1 border-nft-gray-1 '>

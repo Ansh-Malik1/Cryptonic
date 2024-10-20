@@ -25,7 +25,6 @@ const ResellNFT = () => {
     setPrice(result.price)
     setImage(result.image)
     setLoading(false)
-    console.log(result)
   }
   useEffect(()=>{
     if(tokenURI) fetchNFT()

@@ -17,7 +17,6 @@ const FooterLinks = ({heading,items})=>(
 
 const Footer = () => {
   const{theme,setTheme} = useTheme()
-  console.log({theme})
 
   return (
     <footer className = 'flexCenter flex-col border-t dark:border-nft-black-1 border-gray-1 sm:py-8 py-16'>

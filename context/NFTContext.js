@@ -144,7 +144,6 @@ export const NFTProvider = ({children})=>{
         const data = type==='fetchItemsLised'?
         await contract.fetchItemsListed():
         await contract.fetchMyNFTs()
-        console.log(data)
         const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
             const tokenURI = await contract.tokenURI(tokenId)
             const {data} = await axios.get(tokenURI)
@@ -168,8 +167,6 @@ export const NFTProvider = ({children})=>{
     }
 
     const buyNFTs = async (nft)=>{
-        console.log(nft.price)
-        console.log(nft.tokenId)
         const web3modal = new Web3Modal()
         const connection = await web3modal.connect()
         const provider = new ethers.BrowserProvider(connection)

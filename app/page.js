@@ -1,6 +1,6 @@
 "use client"
 import { useState,useEffect,useRef,useContext } from "react";
-import { Banner , CreatorCard ,NFTCard, SearchBar  } from "@/components";
+import { Banner , CreatorCard ,Loader,NFTCard, SearchBar  } from "@/components";
 import { MakeId } from "@/utils/makeId";
 import images from "../assets"
 import Image from "next/image";
@@ -17,10 +17,12 @@ export default function Home() {
   const [nftsCopy,setNftCopy] = useState([])
   const [nfts,setNFTs] = useState([])
   const [activeSelect,setActiveSelect] = useState("Recently Added")
+  const [loading,setLoading] = useState(true)
   useEffect(()=>{
     fetchNFTs().then((items)=>{
       setNFTs(items);
       setNftCopy(items)
+      setLoading(false)
     })
   },[])
   const handleScroll = (direction)=>{
@@ -96,52 +98,47 @@ export default function Home() {
       <div className='w-full minmd:w-4/5'>
       <Banner
         className=''
-        text={'Discover,collect and sell extraoridnary NFTs'}
+        text={<>Discover,collect and sell <br/>extraoridnary NFTs</>}
         childStyles='md:text-4xl sm:text-2xl xs:text-xl text-left '
         parentStyles = 'justify-start mb-6 h-72 sm:h-60 p-12 xs:p-4 xs:h-44 rounded-3xl'
       />
-      <div>
-        <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0'>Best Creators</h1>
-        <div className='relative flex-1 max-w-full flex mt-3' ref={parentRef}>
-          <div className='flex flex-row w-max overflow-x-scroll no-scrollbar select-none' ref={scrollRef}>
-            {topCreators.map((creator,i)=>(
-              <CreatorCard key={creator.seller} rank={i+1} creatorImage={images[`creator${i+1}`]} 
-              creatorName={shortenAddress(creator.seller)} creatorEths={creator.sum}/>
-            ))}
-            {/* {[6,7,8,9,10].map((i)=>(
-              <CreatorCard key={`creator-${i}`} rank={i} creatorImage={images[`creator${i}`]} 
-              creatorName={`0x${MakeId(3)}...${MakeId(3)}`} creatorEths={10-i*0.5}/>
-            ))} */}
-            {!hideButtons && <>
-              <div className='absolute w-8 h-8 minlg:w-12 minglg:h-12 top-45 cursor-pointer left-0' onClick={()=>handleScroll('left')}>
-                <Image src={images.left} layout="fill" objectFit="contain" alt="leftArrow" className={theme === 'light' && 'filter invert'} />
-              </div>
-              <div className='absolute w-8 h-8 minlg:w-12 minglg:h-12 top-45 cursor-pointer right-0' onClick={()=>handleScroll('right')}>
-                <Image src={images.right} layout="fill" objectFit="contain" alt="rightArrow" className={theme === 'light' && 'filter invert'} />
-              </div>
-            </>}
+      {
+        !loading && !nfts.length ? (<h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0">No NFTs for sale</h1>) : loading ? <Loader/> : 
+        (
+          <>
+            <div>
+              <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0'>Top Sellers</h1>
+              <div className='relative flex-1 max-w-full flex mt-3' ref={parentRef}>
+              <div className='flex flex-row w-max overflow-x-scroll no-scrollbar select-none' ref={scrollRef}>
+              {topCreators.map((creator,i)=>(
+                <CreatorCard key={creator.seller} rank={i+1} creatorImage={images[`creator${i+1}`]} 
+                creatorName={shortenAddress(creator.seller)} creatorEths={creator.sum}/>
+              ))}
+              {!hideButtons && <>
+                <div className='absolute w-8 h-8 minlg:w-12 minglg:h-12 top-45 cursor-pointer left-0' onClick={()=>handleScroll('left')}>
+                  <Image src={images.left} layout="fill" objectFit="contain" alt="leftArrow" className={theme === 'light' && 'filter invert'} />
+                </div>
+                <div className='absolute w-8 h-8 minlg:w-12 minglg:h-12 top-45 cursor-pointer right-0' onClick={()=>handleScroll('right')}>
+                  <Image src={images.right} layout="fill" objectFit="contain" alt="rightArrow" className={theme === 'light' && 'filter invert'} />
+                </div>
+              </>}
+            </div>
           </div>
         </div>
-      </div>
-      <div className='mt-10'>
-        <div className='flexBetween mx-4 xs:mx-0 minglg:mx-8 sm:flex-col sm:items-start'>
-          <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold xs:ml-0 flex-1 sm:mb-4'>Hot Bids</h1>
-          <div className="flex-2 sm:w-full flex flex-row sm:flex-col "><SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} handleClearSearch={onClearSearch} /></div>
+        <div className='mt-10'>
+          <div className='flexBetween mx-4 xs:mx-0 minglg:mx-8 sm:flex-col sm:items-start'>
+            <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold xs:ml-0 flex-1 sm:mb-4'>TOP NFTs</h1>
+            <div className="flex-2 sm:w-full flex flex-row sm:flex-col "><SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} handleClearSearch={onClearSearch} /></div>
+          </div>
+          <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
+          {
+            nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft}/>)
+          }
+          </div>
         </div>
-        <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
-        {
-          nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft}/>)
-        }
-          {/* {
-            [1,2,3,4,5,6,7,8,9,10].map((i)=>(
-              <NFTCard
-                key={`nft-${i}`}
-                nft={{i,name:`Nifty NFT ${i}`,seller:`0x${MakeId(3)}...${MakeId(3)}`,owner:`0x${MakeId(3)}...${MakeId(3)}`,Description:'Cool NFT on sale',price:(10-i*0.4356).toFixed(2)}}
-              />
-            ))
-          } */}
-        </div>
-      </div>
+          </>
+        )
+      }
       </div>
     </div>
   );
