@@ -1,6 +1,6 @@
 "use client"
 import { useState,useEffect,useRef,useContext } from "react";
-import { Banner , CreatorCard ,NFTCard  } from "@/components";
+import { Banner , CreatorCard ,NFTCard, SearchBar  } from "@/components";
 import { MakeId } from "@/utils/makeId";
 import images from "../assets"
 import Image from "next/image";
@@ -14,13 +14,15 @@ export default function Home() {
   const [hideButtons, setHideButtons] = useState(false);
   const {theme} = useTheme()
   const {fetchNFTs} = useContext(NFTContext)
+  const [nftsCopy,setNftCopy] = useState([])
   const [nfts,setNFTs] = useState([])
+  const [activeSelect,setActiveSelect] = useState("Recently Added")
   useEffect(()=>{
     fetchNFTs().then((items)=>{
       setNFTs(items);
+      setNftCopy(items)
     })
   },[])
-  console.log(nfts)
   const handleScroll = (direction)=>{
     const {current} = scrollRef
     const scrollAmount = window.innerWidth > 1800 ? 270 : 210;
@@ -50,8 +52,43 @@ export default function Home() {
     }
   })
 
-  const topCreators = getCreators(nfts)
-  console.log(topCreators)
+  useEffect(()=>{
+    const sortedNfts = [...nfts]
+    switch(activeSelect){
+      case 'Price(low to high)':
+        setNFTs(sortedNfts.sort((a,b) => a.price-b.price)) 
+        break;
+      case 'Price(high to low)':
+        setNFTs(sortedNfts.sort((a, b) => b.price - a.price));
+        break;
+      case 'Recently Added':
+        setNFTs(sortedNfts.sort((a, b) => parseInt(b.tokenId) - parseInt(a.tokenId)));
+        break;
+      default:
+        setNFTs(nfts)
+        break;
+    }
+  },[activeSelect])
+
+
+  const onHandleSearch = (value)=>{
+    const filteredNFTs = nfts.filter(({name})=> name.toLowerCase().includes(value.toLowerCase()))
+    if(filteredNFTs.length>0){
+      setNFTs(filteredNFTs)
+    }
+    else{
+      setNFTs(nftsCopy)
+    }
+  }
+
+  const onClearSearch = ()=>{
+    if(nfts.length && nftsCopy.length){
+      setNFTs(nftsCopy)
+    }
+  }
+
+
+  const topCreators = getCreators(nftsCopy)
 
 
   return (
@@ -89,7 +126,7 @@ export default function Home() {
       <div className='mt-10'>
         <div className='flexBetween mx-4 xs:mx-0 minglg:mx-8 sm:flex-col sm:items-start'>
           <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold xs:ml-0 flex-1 sm:mb-4'>Hot Bids</h1>
-          <div>Search Bar</div>
+          <div className="flex-2 sm:w-full flex flex-row sm:flex-col "><SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} handleClearSearch={onClearSearch} /></div>
         </div>
         <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
         {
