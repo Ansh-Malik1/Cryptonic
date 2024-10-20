@@ -6,7 +6,8 @@ import images from "../assets"
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { NFTContext } from "@/context/NFTContext";
-
+import { getCreators } from "@/utils/getTopCreators";
+import { shortenAddress } from "@/utils/shortenAddress";
 export default function Home() {
   const parentRef = useRef(null)
   const scrollRef = useRef(null)
@@ -48,6 +49,11 @@ export default function Home() {
       window.removeEventListener('resize',isScrollable)
     }
   })
+
+  const topCreators = getCreators(nfts)
+  console.log(topCreators)
+
+
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className='w-full minmd:w-4/5'>
@@ -61,10 +67,14 @@ export default function Home() {
         <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0'>Best Creators</h1>
         <div className='relative flex-1 max-w-full flex mt-3' ref={parentRef}>
           <div className='flex flex-row w-max overflow-x-scroll no-scrollbar select-none' ref={scrollRef}>
-            {[6,7,8,9,10].map((i)=>(
+            {topCreators.map((creator,i)=>(
+              <CreatorCard key={creator.seller} rank={i+1} creatorImage={images[`creator${i+1}`]} 
+              creatorName={shortenAddress(creator.seller)} creatorEths={creator.sum}/>
+            ))}
+            {/* {[6,7,8,9,10].map((i)=>(
               <CreatorCard key={`creator-${i}`} rank={i} creatorImage={images[`creator${i}`]} 
               creatorName={`0x${MakeId(3)}...${MakeId(3)}`} creatorEths={10-i*0.5}/>
-            ))}
+            ))} */}
             {!hideButtons && <>
               <div className='absolute w-8 h-8 minlg:w-12 minglg:h-12 top-45 cursor-pointer left-0' onClick={()=>handleScroll('left')}>
                 <Image src={images.left} layout="fill" objectFit="contain" alt="leftArrow" className={theme === 'light' && 'filter invert'} />
